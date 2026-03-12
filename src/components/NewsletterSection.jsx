@@ -37,20 +37,19 @@ export default function NewsletterSection() {
     setErrorMsg('')
 
     try {
-      const res = await fetch('/', {
+      const res = await fetch('/.netlify/functions/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          'form-name': 'newsletter',
-          email,
-        }).toString(),
+        body: new URLSearchParams({ email }).toString(),
       })
 
-      if (res.ok) {
+      const data = await res.json()
+
+      if (res.ok && data.success) {
         setStatus('success')
         setEmail('')
       } else {
-        throw new Error(`Status ${res.status}`)
+        throw new Error(data.error || `Status ${res.status}`)
       }
     } catch (err) {
       setStatus('error')
@@ -87,13 +86,9 @@ export default function NewsletterSection() {
             </div>
           ) : (
             <form
-              name="newsletter"
-              method="POST"
-              data-netlify="true"
               onSubmit={handleSubmit}
               className="newsletter-form"
             >
-              <input type="hidden" name="form-name" value="newsletter" />
 
               <label className="newsletter-label" htmlFor="newsletter-email">
                 Your email address
