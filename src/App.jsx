@@ -3,6 +3,8 @@ import Header from './components/Header.jsx'
 import QuoteSection from './components/QuoteSection.jsx'
 import ExerciseSection from './components/ExerciseSection.jsx'
 import DonationSection from './components/DonationSection.jsx'
+import VideosSection from './components/VideosSection.jsx'
+import NewsletterSection from './components/NewsletterSection.jsx'
 import Footer from './components/Footer.jsx'
 
 export default function App() {
@@ -26,6 +28,12 @@ export default function App() {
           ⚡ Get Moving
         </button>
         <button
+          className={`tab-btn ${activeTab === 'videos' ? 'active' : ''}`}
+          onClick={() => setActiveTab('videos')}
+        >
+          🎬 Watch & Grow
+        </button>
+        <button
           className={`tab-btn ${activeTab === 'give' ? 'active' : ''}`}
           onClick={() => setActiveTab('give')}
         >
@@ -36,8 +44,11 @@ export default function App() {
       <main className="main-content">
         {activeTab === 'inspire' && <QuoteSection />}
         {activeTab === 'move' && <ExerciseSection />}
+        {activeTab === 'videos' && <VideosSection />}
         {activeTab === 'give' && <DonationSection />}
       </main>
+
+      <NewsletterSection />
 
       <Footer />
     </div>
