@@ -11,6 +11,10 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- Hidden form for Netlify Forms detection at build time -->
+    <form name="newsletter" data-netlify="true" hidden>
+      <input type="email" name="email" />
+    </form>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
