@@ -37,25 +37,25 @@ export default function NewsletterSection() {
     setErrorMsg('')
 
     try {
-      const formData = new FormData()
-      formData.append('form-name', 'newsletter')
-      formData.append('email', email)
-
       const res = await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(formData).toString(),
+        body: new URLSearchParams({
+          'form-name': 'newsletter',
+          email,
+        }).toString(),
       })
 
       if (res.ok) {
         setStatus('success')
         setEmail('')
       } else {
-        throw new Error('Submission failed')
+        throw new Error(`Status ${res.status}`)
       }
-    } catch {
+    } catch (err) {
       setStatus('error')
       setErrorMsg('Something went wrong. Please try again.')
+      console.error('Newsletter submission error:', err)
     }
   }
 
