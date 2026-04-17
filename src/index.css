@@ -1027,6 +1027,174 @@ body {
 }
 
 /* ===== FLOATING MUSIC PLAYER ===== */
+
+/* Hidden iframe keeps playing while user reads the page */
+.player-hidden-iframe {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0.01;
+  pointer-events: none;
+  border: none;
+}
+
+/* Mini-bar docked to bottom — never blocks content */
+.mini-player {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 52px;
+  background: #1a1a2e;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  z-index: 1000;
+  padding: 0 16px;
+  transition: background 0.3s ease;
+}
+
+.mini-player-active {
+  background: linear-gradient(90deg, #1a1a2e 0%, color-mix(in srgb, var(--mood-color) 20%, #1a1a2e) 100%);
+  border-top-color: var(--mood-color);
+}
+
+.mini-play-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #FF6B35, #F15BB5);
+  border: none;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: inherit;
+  padding: 8px 20px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(255,107,53,0.4);
+  animation: fab-attention 3s ease-in-out infinite;
+}
+
+.mini-play-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255,107,53,0.5);
+  animation: none;
+}
+
+@keyframes fab-attention {
+  0%, 85%, 100% { transform: scale(1); }
+  90% { transform: scale(1.04); }
+  95% { transform: scale(0.99); }
+}
+
+.mini-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.mini-bars span {
+  display: block;
+  width: 3px;
+  background: var(--mood-color, #FF6B35);
+  border-radius: 2px;
+  animation: bar-bounce 1s ease-in-out infinite;
+}
+
+.mini-bars span:nth-child(1) { height: 6px;  animation-delay: 0s; }
+.mini-bars span:nth-child(2) { height: 14px; animation-delay: 0.15s; }
+.mini-bars span:nth-child(3) { height: 10px; animation-delay: 0.3s; }
+.mini-bars span:nth-child(4) { height: 18px; animation-delay: 0.45s; }
+
+@keyframes bar-bounce {
+  0%, 100% { transform: scaleY(0.4); }
+  50%       { transform: scaleY(1); }
+}
+
+.mini-mood-name {
+  color: white;
+  font-size: 0.88rem;
+  font-weight: 600;
+  flex: 1;
+  text-align: center;
+}
+
+.mini-change {
+  background: rgba(255,255,255,0.12);
+  border: none;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 5px 12px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.mini-change:hover {
+  background: rgba(255,255,255,0.22);
+}
+
+.mini-stop {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+
+.mini-stop:hover {
+  color: white;
+}
+
+/* Mood picker — slides up above the mini-bar */
+.mood-picker-panel {
+  position: fixed;
+  bottom: 52px;
+  left: 0;
+  right: 0;
+  background: #1a1a2e;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  z-index: 999;
+  animation: slide-up 0.22s ease;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.mood-picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px 10px;
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+/* Pad page content so mini-bar doesn't overlap last element */
+.app {
+  padding-bottom: 52px;
+}
+
 .fab {
   position: fixed;
   bottom: 28px;

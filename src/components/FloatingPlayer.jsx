@@ -34,7 +34,6 @@ const moods = [
     label: 'Happy Vibes',
     desc: 'Feel-good songs to brighten up',
     color: '#FEE440',
-    textColor: '#1a1a2e',
     videoId: 'videoseries',
     listId: 'PLgzTt0k8mXzEk586ze4BjvDXR7c-TUSnx',
   },
@@ -66,29 +65,38 @@ function getEmbedUrl(mood) {
 }
 
 export default function FloatingPlayer() {
-  const [open, setOpen] = useState(false)
+  const [pickerOpen, setPickerOpen] = useState(false)
   const [activeMood, setActiveMood] = useState(null)
-  const isPlaying = activeMood !== null
 
   const selectMood = (mood) => {
     setActiveMood(mood.id === activeMood?.id ? null : mood)
+    setPickerOpen(false)
   }
+
+  const stop = () => setActiveMood(null)
 
   return (
     <>
-      {/* Backdrop */}
-      {open && (
-        <div className="player-backdrop" onClick={() => setOpen(false)} />
+      {/* Hidden iframe — keeps playing while reading the page */}
+      {activeMood && (
+        <iframe
+          key={activeMood.id}
+          src={getEmbedUrl(activeMood)}
+          title={activeMood.label}
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="player-hidden-iframe"
+        />
       )}
 
-      {/* Panel */}
-      {open && (
-        <div className="player-panel">
-          <div className="player-panel-header">
-            <h3>🎵 Set the Vibe</h3>
-            <button className="player-close" onClick={() => setOpen(false)}>✕</button>
+      {/* Mood picker — slides up when open, doesn't cover content */}
+      {pickerOpen && (
+        <div className="mood-picker-panel">
+          <div className="mood-picker-header">
+            <span>🎵 Choose your vibe</span>
+            <button className="player-close" onClick={() => setPickerOpen(false)}>✕</button>
           </div>
-
           <div className="mood-grid">
             {moods.map((mood) => {
               const active = activeMood?.id === mood.id
@@ -109,57 +117,30 @@ export default function FloatingPlayer() {
               )
             })}
           </div>
-
-          {activeMood && (
-            <div className="player-embed-wrap">
-              <div className="player-now-playing">
-                <span className="bars">
-                  <span /><span /><span /><span />
-                </span>
-                <span>Now playing: <strong>{activeMood.label}</strong></span>
-              </div>
-              <iframe
-                key={activeMood.id}
-                src={getEmbedUrl(activeMood)}
-                title={activeMood.label}
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="player-iframe"
-              />
-            </div>
-          )}
-
-          {!activeMood && (
-            <p className="player-hint">Pick a mood above to start playing ☝️</p>
-          )}
         </div>
       )}
 
-      {/* Floating Button */}
-      <button
-        className={`fab ${isPlaying ? 'fab-playing' : ''}`}
-        onClick={() => setOpen((o) => !o)}
-        aria-label="Music player"
-        title="Music player"
-      >
-        {isPlaying ? (
+      {/* Mini-bar — always visible at bottom, never blocks content */}
+      <div className={`mini-player ${activeMood ? 'mini-player-active' : ''}`}
+           style={activeMood ? { '--mood-color': activeMood.color } : {}}>
+        {activeMood ? (
           <>
-            <span className="fab-bars">
+            <span className="mini-bars">
               <span /><span /><span /><span />
             </span>
-            <span>{activeMood.emoji} {activeMood.label}</span>
+            <span className="mini-mood-name">{activeMood.emoji} {activeMood.label}</span>
+            <button className="mini-change" onClick={() => setPickerOpen(o => !o)}>
+              Change
+            </button>
+            <button className="mini-stop" onClick={stop} aria-label="Stop music">✕</button>
           </>
         ) : (
-          <>
-            <span className="fab-icon">🎵</span>
+          <button className="mini-play-btn" onClick={() => setPickerOpen(o => !o)}>
+            <span>🎵</span>
             <span>Play Music</span>
-          </>
+          </button>
         )}
-        {false && (
-          <span className="fab-label">{activeMood?.emoji}</span>
-        )}
-      </button>
+      </div>
     </>
   )
 }
