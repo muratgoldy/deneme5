@@ -5,6 +5,7 @@ import ExerciseSection from './components/ExerciseSection.jsx'
 import DonationSection from './components/DonationSection.jsx'
 import VideosSection from './components/VideosSection.jsx'
 import NewsletterSection from './components/NewsletterSection.jsx'
+import FloatingPlayer from './components/FloatingPlayer.jsx'
 import Footer from './components/Footer.jsx'
 
 export default function App() {
@@ -51,6 +52,7 @@ export default function App() {
       <NewsletterSection />
 
       <Footer />
+      <FloatingPlayer />
     </div>
   )
 }
