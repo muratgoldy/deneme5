@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 const moods = [
   {
@@ -7,8 +7,7 @@ const moods = [
     label: 'Morning Energy',
     desc: 'Uplifting beats to start your day',
     color: '#FF6B35',
-    videoId: 'videoseries',
-    listId: 'PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI',
+    url: 'https://www.youtube.com/embed/videoseries?list=PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI&rel=0',
   },
   {
     id: 'focus',
@@ -16,8 +15,7 @@ const moods = [
     label: 'Deep Focus',
     desc: 'Lo-fi beats to study & create',
     color: '#00BBF9',
-    videoId: 'jfKfPfyJRdk',
-    listId: null,
+    url: 'https://www.youtube.com/embed/jfKfPfyJRdk?rel=0',
   },
   {
     id: 'chill',
@@ -25,8 +23,7 @@ const moods = [
     label: 'Chill & Relax',
     desc: 'Calm acoustic & ambient sounds',
     color: '#00F5D4',
-    videoId: 'videoseries',
-    listId: 'PLnIclDWBCovHBsZ37VjFZbx0U2D3bXAY6',
+    url: 'https://www.youtube.com/embed/videoseries?list=PLnIclDWBCovHBsZ37VjFZbx0U2D3bXAY6&rel=0',
   },
   {
     id: 'happy',
@@ -34,8 +31,7 @@ const moods = [
     label: 'Happy Vibes',
     desc: 'Feel-good songs to brighten up',
     color: '#FEE440',
-    videoId: 'videoseries',
-    listId: 'PLgzTt0k8mXzEk586ze4BjvDXR7c-TUSnx',
+    url: 'https://www.youtube.com/embed/videoseries?list=PLgzTt0k8mXzEk586ze4BjvDXR7c-TUSnx&rel=0',
   },
   {
     id: 'power',
@@ -43,8 +39,7 @@ const moods = [
     label: 'Power Up',
     desc: 'High energy to get things done',
     color: '#9B5DE5',
-    videoId: 'videoseries',
-    listId: 'PLOzDu-MXXLliO9fBNZOQTBDddoA3FzZUo',
+    url: 'https://www.youtube.com/embed/videoseries?list=PLOzDu-MXXLliO9fBNZOQTBDddoA3FzZUo&rel=0',
   },
   {
     id: 'nature',
@@ -52,47 +47,64 @@ const moods = [
     label: 'Nature Sounds',
     desc: 'Rain, waves & forest ambience',
     color: '#3A86FF',
-    videoId: 'eKFTSSKCzWA',
-    listId: null,
+    url: 'https://www.youtube.com/embed/eKFTSSKCzWA?rel=0',
   },
 ]
 
-function getEmbedUrl(mood) {
-  if (mood.listId) {
-    return `https://www.youtube.com/embed/videoseries?list=${mood.listId}&autoplay=1&rel=0`
-  }
-  return `https://www.youtube.com/embed/${mood.videoId}?autoplay=1&rel=0`
-}
-
 export default function FloatingPlayer() {
-  const [pickerOpen, setPickerOpen] = useState(false)
   const [activeMood, setActiveMood] = useState(null)
+  const [pickerOpen, setPickerOpen] = useState(false)
+  const [playerVisible, setPlayerVisible] = useState(true)
+  const iframeRef = useRef(null)
 
   const selectMood = (mood) => {
-    setActiveMood(mood.id === activeMood?.id ? null : mood)
+    const next = mood.id === activeMood?.id ? null : mood
+    setActiveMood(next)
     setPickerOpen(false)
+    setPlayerVisible(true)
+    // Set src directly so iOS keeps the user interaction chain intact
+    if (iframeRef.current) {
+      iframeRef.current.src = next ? next.url : 'about:blank'
+    }
   }
 
-  const stop = () => setActiveMood(null)
+  const stop = () => {
+    setActiveMood(null)
+    if (iframeRef.current) iframeRef.current.src = 'about:blank'
+  }
 
   return (
     <>
-      {/* Mini video player — small but visible so mobile browsers keep playing */}
-      {activeMood && (
-        <div className="player-mini-video">
-          <iframe
-            key={activeMood.id}
-            src={getEmbedUrl(activeMood)}
-            title={activeMood.label}
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className="player-mini-iframe"
-          />
+      {/* YouTube player — always mounted so iOS doesn't break the interaction chain */}
+      <div
+        className="yt-player-wrap"
+        style={{
+          opacity: activeMood && playerVisible ? 1 : 0,
+          pointerEvents: activeMood && playerVisible ? 'auto' : 'none',
+          bottom: activeMood && playerVisible ? '104px' : '52px',
+        }}
+      >
+        <div className="yt-player-bar" style={{ background: activeMood?.color || '#FF6B35' }}>
+          <span>{activeMood?.emoji} {activeMood?.label}</span>
+          <div style={{ display: 'flex', gap: 6 }}>
+            <button className="yt-ctrl" onClick={() => setPlayerVisible(v => !v)} title="Minimise">
+              {playerVisible ? '▾' : '▴'}
+            </button>
+            <button className="yt-ctrl" onClick={stop} title="Stop">✕</button>
+          </div>
         </div>
-      )}
+        <iframe
+          ref={iframeRef}
+          src="about:blank"
+          title="Music player"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="yt-iframe"
+        />
+      </div>
 
-      {/* Mood picker — slides up when open, doesn't cover content */}
+      {/* Mood picker panel */}
       {pickerOpen && (
         <div className="mood-picker-panel">
           <div className="mood-picker-header">
@@ -100,41 +112,38 @@ export default function FloatingPlayer() {
             <button className="player-close" onClick={() => setPickerOpen(false)}>✕</button>
           </div>
           <div className="mood-grid">
-            {moods.map((mood) => {
-              const active = activeMood?.id === mood.id
-              return (
-                <button
-                  key={mood.id}
-                  className={`mood-card ${active ? 'mood-card-active' : ''}`}
-                  style={{ '--mood-color': mood.color }}
-                  onClick={() => selectMood(mood)}
-                >
-                  <span className="mood-emoji">{mood.emoji}</span>
-                  <div className="mood-info">
-                    <span className="mood-label">{mood.label}</span>
-                    <span className="mood-desc">{mood.desc}</span>
-                  </div>
-                  {active && <span className="mood-playing-dot" />}
-                </button>
-              )
-            })}
+            {moods.map((mood) => (
+              <button
+                key={mood.id}
+                className={`mood-card ${activeMood?.id === mood.id ? 'mood-card-active' : ''}`}
+                style={{ '--mood-color': mood.color }}
+                onClick={() => selectMood(mood)}
+              >
+                <span className="mood-emoji">{mood.emoji}</span>
+                <div className="mood-info">
+                  <span className="mood-label">{mood.label}</span>
+                  <span className="mood-desc">{mood.desc}</span>
+                </div>
+                {activeMood?.id === mood.id && <span className="mood-playing-dot" />}
+              </button>
+            ))}
           </div>
         </div>
       )}
 
-      {/* Mini-bar — always visible at bottom, never blocks content */}
-      <div className={`mini-player ${activeMood ? 'mini-player-active' : ''}`}
-           style={activeMood ? { '--mood-color': activeMood.color } : {}}>
+      {/* Mini-bar always at bottom */}
+      <div
+        className={`mini-player ${activeMood ? 'mini-player-active' : ''}`}
+        style={activeMood ? { '--mood-color': activeMood.color } : {}}
+      >
         {activeMood ? (
           <>
             <span className="mini-bars">
               <span /><span /><span /><span />
             </span>
             <span className="mini-mood-name">{activeMood.emoji} {activeMood.label}</span>
-            <button className="mini-change" onClick={() => setPickerOpen(o => !o)}>
-              Change
-            </button>
-            <button className="mini-stop" onClick={stop} aria-label="Stop music">✕</button>
+            <button className="mini-change" onClick={() => setPickerOpen(o => !o)}>Change</button>
+            <button className="mini-stop" onClick={stop} aria-label="Stop">✕</button>
           </>
         ) : (
           <button className="mini-play-btn" onClick={() => setPickerOpen(o => !o)}>
