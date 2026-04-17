@@ -1029,26 +1029,39 @@ body {
 /* ===== FLOATING MUSIC PLAYER ===== */
 .fab {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
+  bottom: 28px;
+  right: 20px;
+  height: 52px;
+  padding: 0 20px 0 16px;
+  border-radius: 50px;
   background: linear-gradient(135deg, #FF6B35, #F15BB5);
   border: none;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(255,107,53,0.5);
+  box-shadow: 0 6px 24px rgba(255,107,53,0.55), 0 2px 8px rgba(0,0,0,0.2);
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   z-index: 1000;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  gap: 2px;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: inherit;
+  letter-spacing: 0.01em;
+  animation: fab-attention 3s ease-in-out infinite;
+}
+
+@keyframes fab-attention {
+  0%, 85%, 100% { transform: scale(1); }
+  90% { transform: scale(1.06); }
+  95% { transform: scale(0.98); }
 }
 
 .fab:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 28px rgba(255,107,53,0.6);
+  transform: scale(1.06);
+  box-shadow: 0 8px 32px rgba(255,107,53,0.65);
+  animation: none;
 }
 
 .fab-playing {
@@ -1057,8 +1070,8 @@ body {
 }
 
 @keyframes fab-pulse {
-  0%, 100% { box-shadow: 0 4px 20px rgba(155,93,229,0.5); }
-  50% { box-shadow: 0 4px 32px rgba(155,93,229,0.8); }
+  0%, 100% { box-shadow: 0 6px 24px rgba(155,93,229,0.55); }
+  50% { box-shadow: 0 6px 36px rgba(155,93,229,0.85); }
 }
 
 .fab-icon {

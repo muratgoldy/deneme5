@@ -144,14 +144,20 @@ export default function FloatingPlayer() {
         title="Music player"
       >
         {isPlaying ? (
-          <span className="fab-bars">
-            <span /><span /><span /><span />
-          </span>
+          <>
+            <span className="fab-bars">
+              <span /><span /><span /><span />
+            </span>
+            <span>{activeMood.emoji} {activeMood.label}</span>
+          </>
         ) : (
-          <span className="fab-icon">🎵</span>
+          <>
+            <span className="fab-icon">🎵</span>
+            <span>Play Music</span>
+          </>
         )}
-        {isPlaying && !open && (
-          <span className="fab-label">{activeMood.emoji}</span>
+        {false && (
+          <span className="fab-label">{activeMood?.emoji}</span>
         )}
       </button>
     </>
