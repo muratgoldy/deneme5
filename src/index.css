@@ -1028,16 +1028,24 @@ body {
 
 /* ===== FLOATING MUSIC PLAYER ===== */
 
-/* Hidden iframe keeps playing while user reads the page */
-.player-hidden-iframe {
+/* Small visible video tucked into the mini-bar — mobile needs it visible to keep playing */
+.player-mini-video {
   position: fixed;
-  bottom: 0;
+  bottom: 52px;
   right: 0;
-  width: 1px;
-  height: 1px;
-  opacity: 0.01;
-  pointer-events: none;
+  width: 160px;
+  height: 90px;
+  z-index: 998;
+  border-radius: 10px 0 0 0;
+  overflow: hidden;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.3);
+}
+
+.player-mini-iframe {
+  width: 100%;
+  height: 100%;
   border: none;
+  display: block;
 }
 
 /* Mini-bar docked to bottom — never blocks content */

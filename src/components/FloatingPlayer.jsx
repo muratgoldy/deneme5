@@ -77,17 +77,19 @@ export default function FloatingPlayer() {
 
   return (
     <>
-      {/* Hidden iframe — keeps playing while reading the page */}
+      {/* Mini video player — small but visible so mobile browsers keep playing */}
       {activeMood && (
-        <iframe
-          key={activeMood.id}
-          src={getEmbedUrl(activeMood)}
-          title={activeMood.label}
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          className="player-hidden-iframe"
-        />
+        <div className="player-mini-video">
+          <iframe
+            key={activeMood.id}
+            src={getEmbedUrl(activeMood)}
+            title={activeMood.label}
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="player-mini-iframe"
+          />
+        </div>
       )}
 
       {/* Mood picker — slides up when open, doesn't cover content */}
