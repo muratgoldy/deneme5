@@ -75,6 +75,18 @@ const exercises = [
     ],
     benefit: 'Rewires your brain toward positivity and resilience',
   },
+  {
+    id: 7, emoji: '🌺', title: "Ho'oponopono", duration: '3 min', energy: 'Heal', color: '#FF85A1', points: 30,
+    steps: [
+      'Sit comfortably and close your eyes',
+      'Bring to mind someone or something causing you stress',
+      'Place your hand on your heart and breathe slowly',
+      'Silently repeat: "I\'m sorry. Please forgive me."',
+      'Continue: "Thank you. I love you."',
+      'Repeat the four phrases for 2 minutes — feel the weight lift',
+    ],
+    benefit: 'Ancient Hawaiian practice that releases guilt, resentment and restores inner peace',
+  },
 ]
 
 const BADGES = [
