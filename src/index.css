@@ -291,6 +291,25 @@ body {
   color: var(--text);
   font-style: italic;
   line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.affirmation-refresh {
+  background: none;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.affirmation-refresh:hover {
+  background: var(--primary);
+  color: white;
 }
 
 /* ===== BUTTONS ===== */
