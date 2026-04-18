@@ -1,12 +1,11 @@
+import { useLanguage } from '../LanguageContext.jsx'
+
 export default function Footer() {
+  const { t } = useLanguage()
   return (
     <footer className="footer">
-      <p>
-        Made with ❤️ to brighten your day, every day.
-      </p>
-      <p className="footer-sub">
-        Share BrightDay with someone who needs it today.
-      </p>
+      <p>{t('footer_main')}</p>
+      <p className="footer-sub">{t('footer_sub')}</p>
     </footer>
   )
 }

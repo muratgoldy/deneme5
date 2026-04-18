@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import { useLanguage } from '../LanguageContext.jsx'
 
 const DAILY_GOAL = 3
 
-const exercises = [
+const EXERCISE_STATIC = [
   {
-    id: 1, emoji: '🧘', title: 'Box Breathing', duration: '2 min', energy: 'Calm', color: '#00BBF9', points: 20,
+    id: 1, emoji: '🧘', color: '#00BBF9', points: 20, duration: '2 min',
     steps: [
       'Sit upright in your chair',
       'Breathe IN slowly for 4 counts',
@@ -16,7 +17,7 @@ const exercises = [
     benefit: 'Reduces stress instantly and sharpens focus',
   },
   {
-    id: 2, emoji: '💪', title: 'Power Stretch', duration: '3 min', energy: 'Energize', color: '#FF6B35', points: 30,
+    id: 2, emoji: '💪', color: '#FF6B35', points: 30, duration: '3 min',
     steps: [
       'Stand up from your seat',
       'Reach both arms above your head — stretch tall!',
@@ -28,7 +29,7 @@ const exercises = [
     benefit: 'Releases tension and boosts circulation',
   },
   {
-    id: 3, emoji: '🕺', title: '60-Second Dance Break', duration: '1 min', energy: 'Joy', color: '#F15BB5', points: 10,
+    id: 3, emoji: '🕺', color: '#F15BB5', points: 10, duration: '1 min',
     steps: [
       'Put on your favorite upbeat song',
       'Stand up — anywhere is fine!',
@@ -40,7 +41,7 @@ const exercises = [
     benefit: 'Releases endorphins and lifts mood immediately',
   },
   {
-    id: 4, emoji: '👁️', title: '20-20-20 Eye Rest', duration: '1 min', energy: 'Rest', color: '#9B5DE5', points: 10,
+    id: 4, emoji: '👁️', color: '#9B5DE5', points: 10, duration: '1 min',
     steps: [
       'Look away from your screen',
       'Find something 20 feet (6m) away',
@@ -52,7 +53,7 @@ const exercises = [
     benefit: 'Reduces eye strain and refreshes your vision',
   },
   {
-    id: 5, emoji: '🚶', title: 'Walk & Think', duration: '5 min', energy: 'Refresh', color: '#00F5D4', points: 50,
+    id: 5, emoji: '🚶', color: '#00F5D4', points: 50, duration: '5 min',
     steps: [
       'Stand up and walk around your space',
       'No phone — just you and your thoughts',
@@ -64,7 +65,7 @@ const exercises = [
     benefit: 'Clears mental fog and sparks creativity',
   },
   {
-    id: 6, emoji: '🤲', title: 'Gratitude Pause', duration: '2 min', energy: 'Mindful', color: '#FEE440', points: 20,
+    id: 6, emoji: '🤲', color: '#FEE440', points: 20, duration: '2 min',
     steps: [
       'Close your eyes and take a breath',
       'Think of one person you appreciate',
@@ -76,27 +77,17 @@ const exercises = [
     benefit: 'Rewires your brain toward positivity and resilience',
   },
   {
-    id: 7, emoji: '🌺', title: "Ho'oponopono", duration: '3 min', energy: 'Heal', color: '#FF85A1', points: 30,
+    id: 7, emoji: '🌺', color: '#FF85A1', points: 30, duration: '3 min',
     steps: [
       'Sit comfortably and close your eyes',
       'Bring to mind someone or something causing you stress',
       'Place your hand on your heart and breathe slowly',
-      'Silently repeat: "I\'m sorry. Please forgive me."',
+      "Silently repeat: \"I'm sorry. Please forgive me.\"",
       'Continue: "Thank you. I love you."',
       'Repeat the four phrases for 2 minutes — feel the weight lift',
     ],
     benefit: 'Ancient Hawaiian practice that releases guilt, resentment and restores inner peace',
   },
-]
-
-const BADGES = [
-  { id: 'first',    emoji: '⭐', label: 'First Step',     desc: 'Complete your first exercise',  req: (p) => p.total >= 1 },
-  { id: 'streak3',  emoji: '🔥', label: 'On Fire',        desc: '3 days in a row',               req: (p) => p.streak >= 3 },
-  { id: 'streak7',  emoji: '⚡', label: 'Week Warrior',   desc: '7-day streak',                  req: (p) => p.streak >= 7 },
-  { id: 'streak30', emoji: '💎', label: 'Diamond Mind',   desc: '30-day streak',                 req: (p) => p.streak >= 30 },
-  { id: 'total10',  emoji: '🌟', label: 'Rising Star',    desc: '10 exercises completed',        req: (p) => p.total >= 10 },
-  { id: 'total50',  emoji: '🏆', label: 'Champion',       desc: '50 exercises completed',        req: (p) => p.total >= 50 },
-  { id: 'goal',     emoji: '🎯', label: 'Daily Hero',     desc: `Hit the ${DAILY_GOAL}-a-day goal`, req: (p) => p.todayCount >= DAILY_GOAL },
 ]
 
 const TODAY = new Date().toDateString()
@@ -126,39 +117,44 @@ function saveProgress(p) {
 }
 
 export default function ExerciseSection() {
+  const { t } = useLanguage()
   const [active, setActive] = useState(null)
   const [progress, setProgress] = useState(loadProgress)
-  const [celebrate, setCelebrate] = useState(null) // badge id to celebrate
+  const [celebrate, setCelebrate] = useState(false)
   const [justEarned, setJustEarned] = useState(null)
+
+  const BADGES = [
+    { id: 'first',    emoji: '⭐', label: t('badge_first_label'),    desc: t('badge_first_desc'),    req: (p) => p.total >= 1 },
+    { id: 'streak3',  emoji: '🔥', label: t('badge_streak3_label'),  desc: t('badge_streak3_desc'),  req: (p) => p.streak >= 3 },
+    { id: 'streak7',  emoji: '⚡', label: t('badge_streak7_label'),  desc: t('badge_streak7_desc'),  req: (p) => p.streak >= 7 },
+    { id: 'streak30', emoji: '💎', label: t('badge_streak30_label'), desc: t('badge_streak30_desc'), req: (p) => p.streak >= 30 },
+    { id: 'total10',  emoji: '🌟', label: t('badge_total10_label'),  desc: t('badge_total10_desc'),  req: (p) => p.total >= 10 },
+    { id: 'total50',  emoji: '🏆', label: t('badge_total50_label'),  desc: t('badge_total50_desc'),  req: (p) => p.total >= 50 },
+    { id: 'goal',     emoji: '🎯', label: t('badge_goal_label'),     desc: t('badge_goal_desc'),     req: (p) => p.todayCount >= DAILY_GOAL },
+  ]
+
+  const exercises = EXERCISE_STATIC.map((ex) => ({
+    ...ex,
+    title:  t(`ex${ex.id}_title`),
+    energy: t(`ex${ex.id}_energy`),
+  }))
 
   const markDone = () => {
     if (!active) return
-
     setProgress((prev) => {
       const isNewDay = prev.lastDate !== TODAY
       const newStreak = isNewDay ? prev.streak + 1 : prev.streak
-      const newTodayIds = prev.todayIds.includes(active.id)
-        ? prev.todayIds
-        : [...prev.todayIds, active.id]
       const alreadyDoneToday = prev.todayIds.includes(active.id)
+      const newTodayIds = alreadyDoneToday ? prev.todayIds : [...prev.todayIds, active.id]
       const newTotal = alreadyDoneToday ? prev.total : prev.total + 1
       const newPoints = alreadyDoneToday ? prev.points : prev.points + active.points
       const newTodayCount = alreadyDoneToday ? prev.todayCount : prev.todayCount + 1
-
       const updated = {
-        streak: newStreak,
-        lastDate: TODAY,
-        total: newTotal,
-        points: newPoints,
-        badges: prev.badges,
-        todayIds: newTodayIds,
-        todayCount: newTodayCount,
+        streak: newStreak, lastDate: TODAY, total: newTotal,
+        points: newPoints, badges: prev.badges,
+        todayIds: newTodayIds, todayCount: newTodayCount,
       }
-
-      // Check for new badges
-      const newBadges = BADGES.filter(
-        (b) => !prev.badges.includes(b.id) && b.req(updated)
-      )
+      const newBadges = BADGES.filter((b) => !prev.badges.includes(b.id) && b.req(updated))
       if (newBadges.length) {
         updated.badges = [...prev.badges, ...newBadges.map((b) => b.id)]
         setTimeout(() => {
@@ -167,11 +163,9 @@ export default function ExerciseSection() {
           setTimeout(() => setCelebrate(false), 3000)
         }, 400)
       }
-
       saveProgress(updated)
       return updated
     })
-
     setActive(null)
   }
 
@@ -180,26 +174,23 @@ export default function ExerciseSection() {
 
   return (
     <section className="section">
-
-      {/* Badge earned toast */}
       {celebrate && justEarned && (
         <div className="badge-toast">
           <span className="badge-toast-emoji">{justEarned.emoji}</span>
           <div>
-            <p className="badge-toast-title">Badge unlocked!</p>
+            <p className="badge-toast-title">{t('badge_unlocked')}</p>
             <p className="badge-toast-name">{justEarned.label}</p>
           </div>
         </div>
       )}
 
-      <h2 className="section-title">Quick Energy Boosters</h2>
+      <h2 className="section-title">{t('ex_section_title')}</h2>
 
-      {/* Streak + stats bar */}
       <div className="streak-header">
         <div className="streak-stat">
           <span className="streak-number">{progress.streak}</span>
           <span className="streak-fire">{progress.streak > 0 ? '🔥' : '💤'}</span>
-          <span className="streak-label">day streak</span>
+          <span className="streak-label">{t('ex_day_streak')}</span>
         </div>
         <div className="streak-divider" />
         <div className="streak-stat">
@@ -209,36 +200,29 @@ export default function ExerciseSection() {
         <div className="streak-divider" />
         <div className="streak-stat">
           <span className="streak-number">{progress.total}</span>
-          <span className="streak-label">total done</span>
+          <span className="streak-label">{t('ex_total_done')}</span>
         </div>
       </div>
 
-      {/* Daily goal progress */}
       <div className="daily-goal">
         <div className="daily-goal-header">
-          <span>Today's goal</span>
+          <span>{t('ex_todays_goal')}</span>
           <span className={goalMet ? 'goal-met-label' : ''}>
-            {goalMet ? '🎯 Goal reached!' : `${progress.todayCount} / ${DAILY_GOAL} exercises`}
+            {goalMet
+              ? t('ex_goal_reached')
+              : t('ex_progress', { count: progress.todayCount, total: DAILY_GOAL })}
           </span>
         </div>
         <div className="goal-bar-track">
-          <div
-            className={`goal-bar-fill ${goalMet ? 'goal-bar-done' : ''}`}
-            style={{ width: `${goalPct}%` }}
-          />
+          <div className={`goal-bar-fill ${goalMet ? 'goal-bar-done' : ''}`} style={{ width: `${goalPct}%` }} />
         </div>
       </div>
 
-      {/* Badges */}
       <div className="badges-row">
         {BADGES.map((badge) => {
           const earned = progress.badges.includes(badge.id)
           return (
-            <div
-              key={badge.id}
-              className={`badge-chip ${earned ? 'badge-earned' : 'badge-locked'}`}
-              title={`${badge.label}: ${badge.desc}`}
-            >
+            <div key={badge.id} className={`badge-chip ${earned ? 'badge-earned' : 'badge-locked'}`} title={`${badge.label}: ${badge.desc}`}>
               <span>{badge.emoji}</span>
               <span className="badge-chip-label">{badge.label}</span>
             </div>
@@ -246,11 +230,8 @@ export default function ExerciseSection() {
         })}
       </div>
 
-      <p className="section-subtitle" style={{ marginTop: 20 }}>
-        Pick an activity — earn XP and keep your streak alive!
-      </p>
+      <p className="section-subtitle" style={{ marginTop: 20 }}>{t('ex_section_subtitle')}</p>
 
-      {/* Active exercise panel */}
       {active && (
         <div className="exercise-active" style={{ borderColor: active.color }}>
           <div className="exercise-active-header" style={{ background: active.color }}>
@@ -270,15 +251,14 @@ export default function ExerciseSection() {
             ))}
           </ol>
           <p className="exercise-benefit">
-            <strong>Why this works:</strong> {active.benefit}
+            <strong>{t('ex_why_works')}</strong> {active.benefit}
           </p>
           <button className="btn btn-primary btn-full" onClick={markDone}>
-            ✅ Done! Claim +{active.points} XP
+            {t('ex_done_btn', { points: active.points })}
           </button>
         </div>
       )}
 
-      {/* Exercise grid */}
       <div className="exercise-grid">
         {exercises.map((ex) => {
           const done = progress.todayIds.includes(ex.id)
@@ -293,19 +273,16 @@ export default function ExerciseSection() {
               <div className="exercise-card-body">
                 <h3>{ex.title}</h3>
                 <div className="exercise-card-meta">
-                  <span className="badge" style={{ background: ex.color + '33', color: ex.color }}>
-                    {ex.energy}
-                  </span>
+                  <span className="badge" style={{ background: ex.color + '33', color: ex.color }}>{ex.energy}</span>
                   <span className="duration">{ex.duration}</span>
                   <span className="xp-pill">+{ex.points} XP</span>
                 </div>
               </div>
-              {done && <span className="done-badge">✓ Done</span>}
+              {done && <span className="done-badge">{t('ex_done_label')}</span>}
             </button>
           )
         })}
       </div>
-
     </section>
   )
 }

@@ -1,68 +1,33 @@
 import { useState, useRef } from 'react'
+import { useLanguage } from '../LanguageContext.jsx'
 
-const moods = [
-  {
-    id: 'morning',
-    emoji: '🌅',
-    label: 'Morning Energy',
-    desc: 'Uplifting beats to start your day',
-    color: '#FF6B35',
-    url: 'https://www.youtube.com/embed/videoseries?list=PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI&rel=0',
-  },
-  {
-    id: 'focus',
-    emoji: '🧠',
-    label: 'Deep Focus',
-    desc: 'Lo-fi beats to study & create',
-    color: '#00BBF9',
-    url: 'https://www.youtube.com/embed/jfKfPfyJRdk?rel=0',
-  },
-  {
-    id: 'chill',
-    emoji: '🌿',
-    label: 'Chill & Relax',
-    desc: 'Calm acoustic & ambient sounds',
-    color: '#00F5D4',
-    url: 'https://www.youtube.com/embed/videoseries?list=PLnIclDWBCovHBsZ37VjFZbx0U2D3bXAY6&rel=0',
-  },
-  {
-    id: 'happy',
-    emoji: '😊',
-    label: 'Happy Vibes',
-    desc: 'Feel-good songs to brighten up',
-    color: '#FEE440',
-    url: 'https://www.youtube.com/embed/videoseries?list=PLgzTt0k8mXzEk586ze4BjvDXR7c-TUSnx&rel=0',
-  },
-  {
-    id: 'power',
-    emoji: '💪',
-    label: 'Power Up',
-    desc: 'High energy to get things done',
-    color: '#9B5DE5',
-    url: 'https://www.youtube.com/embed/videoseries?list=PLOzDu-MXXLliO9fBNZOQTBDddoA3FzZUo&rel=0',
-  },
-  {
-    id: 'nature',
-    emoji: '🌊',
-    label: 'Nature Sounds',
-    desc: 'Rain, waves & forest ambience',
-    color: '#3A86FF',
-    url: 'https://www.youtube.com/embed/eKFTSSKCzWA?rel=0',
-  },
+const MOOD_DATA = [
+  { id: 'morning', emoji: '🌅', color: '#FF6B35', url: 'https://www.youtube.com/embed/videoseries?list=PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI&rel=0' },
+  { id: 'focus',   emoji: '🧠', color: '#00BBF9', url: 'https://www.youtube.com/embed/jfKfPfyJRdk?rel=0' },
+  { id: 'chill',   emoji: '🌿', color: '#00F5D4', url: 'https://www.youtube.com/embed/videoseries?list=PLnIclDWBCovHBsZ37VjFZbx0U2D3bXAY6&rel=0' },
+  { id: 'happy',   emoji: '😊', color: '#FEE440', url: 'https://www.youtube.com/embed/videoseries?list=PLgzTt0k8mXzEk586ze4BjvDXR7c-TUSnx&rel=0' },
+  { id: 'power',   emoji: '💪', color: '#9B5DE5', url: 'https://www.youtube.com/embed/videoseries?list=PLOzDu-MXXLliO9fBNZOQTBDddoA3FzZUo&rel=0' },
+  { id: 'nature',  emoji: '🌊', color: '#3A86FF', url: 'https://www.youtube.com/embed/eKFTSSKCzWA?rel=0' },
 ]
 
 export default function FloatingPlayer() {
+  const { t } = useLanguage()
   const [activeMood, setActiveMood] = useState(null)
   const [pickerOpen, setPickerOpen] = useState(false)
   const [playerVisible, setPlayerVisible] = useState(true)
   const iframeRef = useRef(null)
+
+  const moods = MOOD_DATA.map((m) => ({
+    ...m,
+    label: t(`mood_${m.id}_label`),
+    desc:  t(`mood_${m.id}_desc`),
+  }))
 
   const selectMood = (mood) => {
     const next = mood.id === activeMood?.id ? null : mood
     setActiveMood(next)
     setPickerOpen(false)
     setPlayerVisible(true)
-    // Set src directly so iOS keeps the user interaction chain intact
     if (iframeRef.current) {
       iframeRef.current.src = next ? next.url : 'about:blank'
     }
@@ -75,7 +40,6 @@ export default function FloatingPlayer() {
 
   return (
     <>
-      {/* YouTube player — always mounted so iOS doesn't break the interaction chain */}
       <div
         className="yt-player-wrap"
         style={{
@@ -104,11 +68,10 @@ export default function FloatingPlayer() {
         />
       </div>
 
-      {/* Mood picker panel */}
       {pickerOpen && (
         <div className="mood-picker-panel">
           <div className="mood-picker-header">
-            <span>🎵 Choose your vibe</span>
+            <span>{t('player_choose_vibe')}</span>
             <button className="player-close" onClick={() => setPickerOpen(false)}>✕</button>
           </div>
           <div className="mood-grid">
@@ -131,24 +94,18 @@ export default function FloatingPlayer() {
         </div>
       )}
 
-      {/* Mini-bar always at bottom */}
-      <div
-        className={`mini-player ${activeMood ? 'mini-player-active' : ''}`}
-        style={activeMood ? { '--mood-color': activeMood.color } : {}}
-      >
+      <div className={`mini-player ${activeMood ? 'mini-player-active' : ''}`} style={activeMood ? { '--mood-color': activeMood.color } : {}}>
         {activeMood ? (
           <>
-            <span className="mini-bars">
-              <span /><span /><span /><span />
-            </span>
+            <span className="mini-bars"><span /><span /><span /><span /></span>
             <span className="mini-mood-name">{activeMood.emoji} {activeMood.label}</span>
-            <button className="mini-change" onClick={() => setPickerOpen(o => !o)}>Change</button>
+            <button className="mini-change" onClick={() => setPickerOpen(o => !o)}>{t('player_change')}</button>
             <button className="mini-stop" onClick={stop} aria-label="Stop">✕</button>
           </>
         ) : (
           <button className="mini-play-btn" onClick={() => setPickerOpen(o => !o)}>
             <span>🎵</span>
-            <span>Play Music</span>
+            <span>{t('player_play_music')}</span>
           </button>
         )}
       </div>

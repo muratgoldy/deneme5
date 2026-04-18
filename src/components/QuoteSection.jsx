@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import { useLanguage } from '../LanguageContext.jsx'
 
 const quotes = [
   { text: "The secret of getting ahead is getting started.", author: "Mark Twain", category: "action" },
@@ -13,28 +14,23 @@ const quotes = [
   { text: "The best time to plant a tree was 20 years ago. The second best time is now.", author: "Chinese Proverb", category: "action" },
   { text: "What lies behind us and what lies before us are tiny matters compared to what lies within us.", author: "Ralph Waldo Emerson", category: "inner strength" },
   { text: "Act as if what you do makes a difference. It does.", author: "William James", category: "impact" },
-
   // Marcus Aurelius
   { text: "You have power over your mind, not outside events. Realize this, and you will find strength.", author: "Marcus Aurelius", category: "wisdom" },
   { text: "The obstacle is the way.", author: "Marcus Aurelius", category: "resilience" },
   { text: "Waste no more time arguing about what a good man should be. Be one.", author: "Marcus Aurelius", category: "action" },
   { text: "It is not death that a man should fear, but he should fear never beginning to live.", author: "Marcus Aurelius", category: "courage" },
-
   // Socrates
   { text: "The unexamined life is not worth living.", author: "Socrates", category: "wisdom" },
   { text: "Wonder is the beginning of wisdom.", author: "Socrates", category: "wisdom" },
   { text: "Be kind, for everyone you meet is fighting a hard battle.", author: "Socrates", category: "impact" },
-
   // Braveheart
   { text: "Every man dies, not every man really lives.", author: "William Wallace — Braveheart", category: "courage" },
   { text: "They may take our lives, but they'll never take our freedom!", author: "William Wallace — Braveheart", category: "freedom" },
-
   // Nelson Mandela
   { text: "It always seems impossible until it's done.", author: "Nelson Mandela", category: "resilience" },
   { text: "Education is the most powerful weapon which you can use to change the world.", author: "Nelson Mandela", category: "wisdom" },
   { text: "I learned that courage was not the absence of fear, but the triumph over it.", author: "Nelson Mandela", category: "courage" },
   { text: "Do not judge me by my successes, judge me by how many times I fell down and got back up again.", author: "Nelson Mandela", category: "resilience" },
-
   // Atatürk
   { text: "Peace at home, peace in the world.", author: "Mustafa Kemal Atatürk", category: "leadership" },
   { text: "Science is the most reliable guide in life.", author: "Mustafa Kemal Atatürk", category: "wisdom" },
@@ -57,17 +53,17 @@ const affirmations = [
 ]
 
 const categoryColors = {
-  action:        '#FF6B35',
-  courage:       '#9B5DE5',
-  mindfulness:   '#00BBF9',
-  belief:        '#F15BB5',
-  passion:       '#FEE440',
-  resilience:    '#00F5D4',
-  impact:        '#FB5607',
+  action:           '#FF6B35',
+  courage:          '#9B5DE5',
+  mindfulness:      '#00BBF9',
+  belief:           '#F15BB5',
+  passion:          '#FEE440',
+  resilience:       '#00F5D4',
+  impact:           '#FB5607',
   'inner strength': '#3A86FF',
-  wisdom:        '#7B2FBE',
-  freedom:       '#06D6A0',
-  leadership:    '#EF233C',
+  wisdom:           '#7B2FBE',
+  freedom:          '#06D6A0',
+  leadership:       '#EF233C',
 }
 
 const images = [
@@ -84,6 +80,7 @@ const images = [
 ]
 
 export default function QuoteSection() {
+  const { t } = useLanguage()
   const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000)
 
   const [index, setIndex] = useState(() => dayOfYear % quotes.length)
@@ -117,18 +114,13 @@ export default function QuoteSection() {
 
   return (
     <section className="section">
-      <h2 className="section-title">Today's Inspiration</h2>
+      <h2 className="section-title">{t('quote_section_title')}</h2>
 
       <div className={`quote-card ${animating ? 'fade-out' : 'fade-in'}`}>
         <div className="quote-image-wrap">
-          <img
-            src={images[imageIndex].url}
-            alt={images[imageIndex].alt}
-            className="quote-image"
-          />
+          <img src={images[imageIndex].url} alt={images[imageIndex].alt} className="quote-image" />
           <div className="quote-image-overlay" style={{ background: `${color}33` }} />
         </div>
-
         <div className="quote-body">
           <span className="quote-category" style={{ background: color }}>
             {quote.category}
@@ -139,23 +131,18 @@ export default function QuoteSection() {
       </div>
 
       <div className="quote-actions">
-        <button className="btn btn-outline" onClick={nextQuote}>
-          Next Quote →
-        </button>
-        <button className="btn btn-primary" onClick={randomQuote}>
-          Surprise Me 🎲
-        </button>
+        <button className="btn btn-outline" onClick={nextQuote}>{t('quote_next')}</button>
+        <button className="btn btn-primary" onClick={randomQuote}>{t('quote_surprise')}</button>
       </div>
 
       <div className="affirmation-box">
-        <h3>Your daily affirmation</h3>
+        <h3>{t('quote_affirmation_title')}</h3>
         <p>{affirmations[affirmIndex]}</p>
         <button
           className="affirmation-refresh"
           onClick={() => setAffirmIndex((i) => (i + 1) % affirmations.length)}
-          title="Next affirmation"
         >
-          ↻ New affirmation
+          {t('quote_affirmation_refresh')}
         </button>
       </div>
     </section>

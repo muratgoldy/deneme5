@@ -1164,6 +1164,45 @@ body {
   opacity: 0.6;
 }
 
+/* ===== LANGUAGE SWITCHER ===== */
+.lang-switcher {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.lang-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.7);
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 4px 9px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.lang-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+}
+
+.lang-btn-active {
+  background: white;
+  border-color: white;
+  color: var(--primary);
+}
+
+@media (max-width: 600px) {
+  .lang-switcher {
+    margin-left: 0;
+    margin-top: 8px;
+  }
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 600px) {
   .header-inner {

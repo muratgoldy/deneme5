@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useLanguage } from '../LanguageContext.jsx'
 
 const quotes = [
   "The secret of getting ahead is getting started.",
@@ -9,22 +10,21 @@ const quotes = [
   "Act as if what you do makes a difference. It does.",
   "Success is not final, failure is not fatal: it is the courage to continue that counts.",
   "The future belongs to those who believe in the beauty of their dreams.",
-  "What you get by achieving your goals is not as important as what you become.",
-  "Keep your face always toward the sunshine and shadows will fall behind you.",
-  "The only way to do great work is to love what you do.",
-  "In the middle of every difficulty lies opportunity.",
+  "You have power over your mind, not outside events. Realize this, and you will find strength.",
+  "Every man dies, not every man really lives.",
+  "It always seems impossible until it's done.",
+  "The unexamined life is not worth living.",
 ]
 
 function getDailyQuote() {
-  const dayOfYear = Math.floor(
-    (Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000
-  )
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000)
   return quotes[dayOfYear % quotes.length]
 }
 
 export default function NewsletterSection() {
+  const { t } = useLanguage()
   const [email, setEmail] = useState('')
-  const [status, setStatus] = useState('idle') // idle | loading | success | error
+  const [status, setStatus] = useState('idle')
   const [errorMsg, setErrorMsg] = useState('')
 
   const previewQuote = getDailyQuote()
@@ -32,19 +32,15 @@ export default function NewsletterSection() {
   async function handleSubmit(e) {
     e.preventDefault()
     if (!email) return
-
     setStatus('loading')
     setErrorMsg('')
-
     try {
       const res = await fetch('/.netlify/functions/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ email }).toString(),
       })
-
       const data = await res.json()
-
       if (res.ok && data.success) {
         setStatus('success')
         setEmail('')
@@ -53,7 +49,7 @@ export default function NewsletterSection() {
       }
     } catch (err) {
       setStatus('error')
-      setErrorMsg('Something went wrong. Please try again.')
+      setErrorMsg(t('nl_error_msg'))
       console.error('Newsletter submission error:', err)
     }
   }
@@ -63,14 +59,10 @@ export default function NewsletterSection() {
       <div className="newsletter-inner">
         <div className="newsletter-left">
           <div className="newsletter-icon">✉️</div>
-          <h2 className="newsletter-title">Daily Quote in Your Inbox</h2>
-          <p className="newsletter-subtitle">
-            Start every morning with a hand-picked motivational quote delivered straight to you.
-            No spam — just one spark of inspiration per day.
-          </p>
-
+          <h2 className="newsletter-title">{t('nl_title')}</h2>
+          <p className="newsletter-subtitle">{t('nl_subtitle')}</p>
           <div className="newsletter-preview">
-            <p className="newsletter-preview-label">Today's quote preview</p>
+            <p className="newsletter-preview-label">{t('nl_preview_label')}</p>
             <p className="newsletter-preview-quote">"{previewQuote}"</p>
           </div>
         </div>
@@ -79,45 +71,28 @@ export default function NewsletterSection() {
           {status === 'success' ? (
             <div className="newsletter-success">
               <div className="success-icon">🎉</div>
-              <h3>You're in!</h3>
-              <p>
-                Welcome to the BrightDay community. Your first quote is on its way — check your inbox!
-              </p>
+              <h3>{t('nl_success_title')}</h3>
+              <p>{t('nl_success_msg')}</p>
             </div>
           ) : (
-            <form
-              onSubmit={handleSubmit}
-              className="newsletter-form"
-            >
-
-              <label className="newsletter-label" htmlFor="newsletter-email">
-                Your email address
-              </label>
+            <form onSubmit={handleSubmit} className="newsletter-form">
+              <label className="newsletter-label" htmlFor="newsletter-email">{t('nl_email_label')}</label>
               <input
                 id="newsletter-email"
                 type="email"
                 name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder={t('nl_email_placeholder')}
                 required
                 className="newsletter-input"
                 disabled={status === 'loading'}
               />
-
               {errorMsg && <p className="newsletter-error">{errorMsg}</p>}
-
-              <button
-                type="submit"
-                className="btn btn-primary newsletter-submit"
-                disabled={status === 'loading' || !email}
-              >
-                {status === 'loading' ? 'Subscribing...' : 'Subscribe — it\'s free'}
+              <button type="submit" className="btn btn-primary newsletter-submit" disabled={status === 'loading' || !email}>
+                {status === 'loading' ? t('nl_subscribing') : t('nl_subscribe_btn')}
               </button>
-
-              <p className="newsletter-note">
-                Unsubscribe anytime. We respect your inbox.
-              </p>
+              <p className="newsletter-note">{t('nl_note')}</p>
             </form>
           )}
         </div>
