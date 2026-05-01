@@ -90,6 +90,7 @@ export default function QuoteSection() {
 
   const quote = quotes[index]
   const color = categoryColors[quote.category] || '#FF6B35'
+  const affirmations = t('affirmations')
 
   const nextQuote = () => {
     if (animating) return
@@ -123,7 +124,7 @@ export default function QuoteSection() {
         </div>
         <div className="quote-body">
           <span className="quote-category" style={{ background: color }}>
-            {quote.category}
+            {t(`cat_${quote.category.replace(' ', '_')}`)}
           </span>
           <blockquote className="quote-text">"{quote.text}"</blockquote>
           <cite className="quote-author">— {quote.author}</cite>

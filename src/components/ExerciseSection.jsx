@@ -135,8 +135,10 @@ export default function ExerciseSection() {
 
   const exercises = EXERCISE_STATIC.map((ex) => ({
     ...ex,
-    title:  t(`ex${ex.id}_title`),
-    energy: t(`ex${ex.id}_energy`),
+    title:   t(`ex${ex.id}_title`),
+    energy:  t(`ex${ex.id}_energy`),
+    steps:   t(`ex${ex.id}_steps`),
+    benefit: t(`ex${ex.id}_benefit`),
   }))
 
   const markDone = () => {
