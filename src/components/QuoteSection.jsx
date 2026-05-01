@@ -82,15 +82,12 @@ const images = [
 export default function QuoteSection() {
   const { t } = useLanguage()
   const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000)
+  const affirmations = t('affirmations')
 
   const [index, setIndex] = useState(() => dayOfYear % quotes.length)
   const [imageIndex, setImageIndex] = useState(() => dayOfYear % images.length)
   const [affirmIndex, setAffirmIndex] = useState(() => dayOfYear % affirmations.length)
   const [animating, setAnimating] = useState(false)
-
-  const quote = quotes[index]
-  const color = categoryColors[quote.category] || '#FF6B35'
-  const affirmations = t('affirmations')
 
   const nextQuote = () => {
     if (animating) return
