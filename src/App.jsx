@@ -10,12 +10,15 @@ const CONFETTI_COLORS = ['#ef476f', '#ffd166', '#06d6a0', '#118ab2', '#8338ec', 
 // Little floating doodles that drift around the page
 const DOODLES = ['🎨', '🖌️', '🎂', '🎈', '💛', '⭐', '🌸', '🖍️', '🎉', '🦋']
 
+// Base path so assets resolve whether hosted at "/" or in a subfolder (e.g. GitHub Pages)
+const BASE = import.meta.env.BASE_URL
+
 // 📸 Family snapshots — swap these out any time (files live in /public/photos)
 const PHOTOS = [
-  { src: '/photos/family-rockets.jpg', caption: 'Reaching for the stars, together 🚀', tilt: -3 },
-  { src: '/photos/family-engine.jpg', caption: 'Our little astronauts 👩‍🚀', tilt: 2.5 },
-  { src: '/photos/family-cheers.jpg', caption: 'Adventure squad 💫', tilt: -2 },
-  { src: '/photos/nadide-selfie.jpg', caption: 'Out of this world ✨', tilt: 3 },
+  { src: `${BASE}photos/family-rockets.jpg`, caption: 'Reaching for the stars, together 🚀', tilt: -3 },
+  { src: `${BASE}photos/family-engine.jpg`, caption: 'Our little astronauts 👩‍🚀', tilt: 2.5 },
+  { src: `${BASE}photos/family-cheers.jpg`, caption: 'Adventure squad 💫', tilt: -2 },
+  { src: `${BASE}photos/nadide-selfie.jpg`, caption: 'Out of this world ✨', tilt: 3 },
 ]
 
 function Confetti({ pieces }) {
@@ -222,7 +225,7 @@ export default function App() {
         </p>
 
         <figure className="hero-photo">
-          <img src="/photos/nadide-mural.jpg" alt={`${WIFE_NAME} beside a beautiful flower mural`} loading="lazy" />
+          <img src={`${BASE}photos/nadide-mural.jpg`} alt={`${WIFE_NAME} beside a beautiful flower mural`} loading="lazy" />
           <figcaption>the artist &amp; her masterpiece 🌸</figcaption>
         </figure>
 
