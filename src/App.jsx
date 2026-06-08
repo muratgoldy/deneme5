@@ -10,6 +10,14 @@ const CONFETTI_COLORS = ['#ef476f', '#ffd166', '#06d6a0', '#118ab2', '#8338ec', 
 // Little floating doodles that drift around the page
 const DOODLES = ['🎨', '🖌️', '🎂', '🎈', '💛', '⭐', '🌸', '🖍️', '🎉', '🦋']
 
+// 📸 Family snapshots — swap these out any time (files live in /public/photos)
+const PHOTOS = [
+  { src: '/photos/family-rockets.jpg', caption: 'Reaching for the stars, together 🚀', tilt: -3 },
+  { src: '/photos/family-engine.jpg', caption: 'Our little astronauts 👩‍🚀', tilt: 2.5 },
+  { src: '/photos/family-cheers.jpg', caption: 'Adventure squad 💫', tilt: -2 },
+  { src: '/photos/nadide-selfie.jpg', caption: 'Out of this world ✨', tilt: 3 },
+]
+
 function Confetti({ pieces }) {
   return (
     <div className="confetti-layer" aria-hidden="true">
@@ -164,6 +172,11 @@ export default function App() {
           and somehow makes the whole house feel like a masterpiece. 🎨
         </p>
 
+        <figure className="hero-photo">
+          <img src="/photos/nadide-mural.jpg" alt={`${WIFE_NAME} beside a beautiful flower mural`} loading="lazy" />
+          <figcaption>the artist &amp; her masterpiece 🌸</figcaption>
+        </figure>
+
         <section className="cake-section">
           <Cake lit={candlesLit} onBlow={blowCandles} />
           <p className="cake-caption">
@@ -194,6 +207,23 @@ export default function App() {
             <br />
             {DAUGHTER_ONE}, {DAUGHTER_TWO} &amp; me 💛
           </p>
+        </section>
+
+        <section className="gallery">
+          <h2 className="gallery-title">Our favorite snapshots 📸</h2>
+          <div className="polaroids">
+            {PHOTOS.map((photo) => (
+              <figure
+                className="polaroid"
+                key={photo.src}
+                style={{ '--tilt': `${photo.tilt}deg` }}
+              >
+                <span className="tape" />
+                <img src={photo.src} alt={photo.caption} loading="lazy" />
+                <figcaption>{photo.caption}</figcaption>
+              </figure>
+            ))}
+          </div>
         </section>
 
         <button className="celebrate-btn" onClick={() => burst(160)}>

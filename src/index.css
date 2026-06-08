@@ -108,9 +108,39 @@ body {
   line-height: 1.5;
 }
 
+/* ===== HERO PHOTO ===== */
+.hero-photo {
+  width: min(320px, 78vw);
+  margin: 40px auto 0;
+  background: #fff;
+  padding: 12px 12px 0;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  box-shadow: 7px 7px 0 rgba(131, 56, 236, 0.25);
+  transform: rotate(-2deg);
+  transition: transform 0.25s ease;
+}
+
+.hero-photo:hover {
+  transform: rotate(1deg) scale(1.02);
+}
+
+.hero-photo img {
+  width: 100%;
+  display: block;
+  border-radius: 3px;
+}
+
+.hero-photo figcaption {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(1.3rem, 4.5vw, 1.7rem);
+  color: var(--pink);
+  padding: 8px 4px 12px;
+}
+
 /* ===== CAKE ===== */
 .cake-section {
-  margin: 46px auto 10px;
+  margin: 56px auto 10px;
 }
 
 .cake {
@@ -318,6 +348,71 @@ body {
   font-size: clamp(1.4rem, 4.5vw, 1.9rem) !important;
   color: var(--blue);
   margin-top: 8px;
+}
+
+/* ===== POLAROID GALLERY ===== */
+.gallery {
+  margin: 60px auto 0;
+}
+
+.gallery-title {
+  font-family: 'Gloria Hallelujah', cursive;
+  font-size: clamp(1.5rem, 6vw, 2.2rem);
+  color: var(--blue);
+  margin-bottom: 34px;
+  transform: rotate(-1.5deg);
+}
+
+.polaroids {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 28px 22px;
+}
+
+.polaroid {
+  position: relative;
+  width: min(240px, 70vw);
+  background: #fff;
+  padding: 12px 12px 0;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  box-shadow: 6px 6px 0 rgba(58, 46, 46, 0.18);
+  transform: rotate(var(--tilt, 0deg));
+  transition: transform 0.25s ease, box-shadow 0.25s ease, z-index 0s;
+}
+
+.polaroid:hover {
+  transform: rotate(0deg) scale(1.05);
+  box-shadow: 9px 9px 0 rgba(239, 71, 111, 0.3);
+  z-index: 5;
+}
+
+.polaroid img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  display: block;
+  border-radius: 3px;
+}
+
+.polaroid figcaption {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(1.2rem, 4vw, 1.5rem);
+  color: var(--ink);
+  padding: 8px 4px 14px;
+  line-height: 1.2;
+}
+
+.polaroid .tape {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  width: 70px;
+  height: 26px;
+  transform: translateX(-50%) rotate(-4deg);
+  background: rgba(255, 209, 102, 0.6);
+  border: 1px dashed rgba(58, 46, 46, 0.25);
 }
 
 /* ===== CELEBRATE BUTTON ===== */
