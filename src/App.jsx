@@ -2,8 +2,8 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 
 // 💛 Edit these to personalise! 💛
 const WIFE_NAME = 'Nadide'
-const DAUGHTER_ONE = '[Daughter 1]' // <- replace with your eldest's name
-const DAUGHTER_TWO = '[Daughter 2]' // <- replace with your youngest's name
+const DAUGHTER_ONE = 'Mila' // <- replace with your eldest's name
+const DAUGHTER_TWO = 'Melinda' // <- replace with your youngest's name
 
 const CONFETTI_COLORS = ['#ef476f', '#ffd166', '#06d6a0', '#118ab2', '#8338ec', '#ff7b00']
 
