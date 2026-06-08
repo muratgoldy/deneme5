@@ -67,11 +67,59 @@ function Cake({ lit, onBlow }) {
   )
 }
 
+// 🎵 "Happy Birthday" melody — [note, beats]. Frequencies in Hz, F major.
+const N = {
+  C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23,
+  G4: 392.0, A4: 440.0, Bb4: 466.16, C5: 523.25,
+}
+const MELODY = [
+  [N.C4, 0.75], [N.C4, 0.25], [N.D4, 1], [N.C4, 1], [N.F4, 1], [N.E4, 2],
+  [N.C4, 0.75], [N.C4, 0.25], [N.D4, 1], [N.C4, 1], [N.G4, 1], [N.F4, 2],
+  [N.C4, 0.75], [N.C4, 0.25], [N.C5, 1], [N.A4, 1], [N.F4, 1], [N.E4, 1], [N.D4, 2],
+  [N.Bb4, 0.75], [N.Bb4, 0.25], [N.A4, 1], [N.F4, 1], [N.G4, 1], [N.F4, 2],
+]
+const BEAT = 0.42 // seconds per beat
+
 export default function App() {
   const [confetti, setConfetti] = useState([])
   const [candlesLit, setCandlesLit] = useState(true)
   const [wishMade, setWishMade] = useState(false)
+  const [playing, setPlaying] = useState(false)
   const idRef = useRef(0)
+  const audioRef = useRef(null)
+  const playTimerRef = useRef(null)
+
+  const playSong = useCallback(() => {
+    if (playing) return
+    // create / resume the audio context on this user gesture
+    const Ctx = window.AudioContext || window.webkitAudioContext
+    if (!Ctx) return
+    if (!audioRef.current) audioRef.current = new Ctx()
+    const ctx = audioRef.current
+    if (ctx.state === 'suspended') ctx.resume()
+
+    setPlaying(true)
+    let t = ctx.currentTime + 0.1
+    let total = 0
+    MELODY.forEach(([freq, beats]) => {
+      const dur = beats * BEAT
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.type = 'triangle'
+      osc.frequency.value = freq
+      // soft attack + decay so notes don't click
+      gain.gain.setValueAtTime(0.0001, t)
+      gain.gain.exponentialRampToValueAtTime(0.28, t + 0.04)
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + dur * 0.95)
+      osc.connect(gain).connect(ctx.destination)
+      osc.start(t)
+      osc.stop(t + dur)
+      t += dur
+      total += dur
+    })
+    clearTimeout(playTimerRef.current)
+    playTimerRef.current = setTimeout(() => setPlaying(false), (total + 0.3) * 1000)
+  }, [playing])
 
   const burst = useCallback((count = 80) => {
     const pieces = Array.from({ length: count }, () => ({
@@ -103,6 +151,7 @@ export default function App() {
       setCandlesLit(false)
       setWishMade(true)
       burst(140)
+      playSong()
     } else {
       // relight + celebrate again
       setCandlesLit(true)
@@ -184,6 +233,9 @@ export default function App() {
               ? 'Tap the cake, close your eyes, and make a wish 💫'
               : 'Ooooh — wish made! We love you to the moon and back 🌙💛'}
           </p>
+          <button className="song-btn" onClick={playSong} disabled={playing}>
+            {playing ? '🎶 ♪ Happy Birthday ♪ 🎶' : '🎵 Play the birthday song'}
+          </button>
         </section>
 
         <section className={`card message ${wishMade ? 'reveal' : ''}`}>

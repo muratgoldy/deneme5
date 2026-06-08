@@ -294,6 +294,38 @@ body {
   color: var(--blue);
 }
 
+/* ===== SONG BUTTON ===== */
+.song-btn {
+  margin: 18px auto 0;
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-size: clamp(1rem, 3.6vw, 1.25rem);
+  color: var(--ink);
+  background: #fff;
+  border: 3px solid var(--ink);
+  border-radius: 40px;
+  padding: 10px 24px;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 var(--green);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.song-btn:hover:not(:disabled) {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 var(--green);
+}
+
+.song-btn:disabled {
+  cursor: default;
+  color: var(--green);
+  animation: song-pulse 0.9s ease-in-out infinite;
+}
+
+@keyframes song-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
 /* ===== MESSAGE CARD ===== */
 .card.message {
   position: relative;
